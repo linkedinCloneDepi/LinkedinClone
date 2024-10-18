@@ -5,7 +5,7 @@ import deleteIcon from "../../assets/images/delete.svg";
 import { deleteComment, editComment } from "../../utils/postApi";
 import { useAuthStore } from "../../store/authStore";
 import Swal from "sweetalert2";
-function Comment({ comment, commentAdded, setCommentAdded }) {
+function Comment({ comment, setPost }) {
   const { user } = useAuthStore();
   const [isEdit, setIsEdit] = useState(false);
   const [compComment, setCompComment] = useState(comment.content);
@@ -21,11 +21,13 @@ function Comment({ comment, commentAdded, setCommentAdded }) {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
+        setPost((prevPost) => ({
+          ...prevPost,
+          comments: prevPost.comments.filter((id) => id !== comment._id),
+        }));
         deleteComment(comment._id)
           .then(() => {
             // Update your state or handle UI changes after deletion
-            setCommentAdded((prev) => prev - 1); // If you need to refresh comments
-
             Swal.fire("Deleted!", "Your comment has been deleted.", "success");
           })
           .catch((error) => {
@@ -42,8 +44,11 @@ function Comment({ comment, commentAdded, setCommentAdded }) {
   const handelEditComment = async () => {
     if (!isEdit) await setIsEdit(true);
     if (isEdit) {
-      const temp = commentAdded;
       await editComment(compComment, comment._id);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: [...prevPost.comments, comment._id],
+      }));
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -51,7 +56,6 @@ function Comment({ comment, commentAdded, setCommentAdded }) {
         showConfirmButton: false,
         timer: 1000,
       });
-      setCommentAdded(temp + 1);
       setIsEdit(false);
     }
   };

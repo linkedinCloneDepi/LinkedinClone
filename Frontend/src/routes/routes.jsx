@@ -17,6 +17,7 @@ import AnalyticsPage from '../pages/Profile/AnalyticsPage';
 import ResourcePage from '../pages/Profile/ResourcesPage';
 import MessagingPage from "../pages/Messaging/MessagingPage";
 import FollowersPage from "../pages/Profile/FollowersPage";
+import PostDetails from "../components/Post/PostDetails";
 
 const Home = lazy(() => import("../pages/Home"));
 const Networks = lazy(() => import("../pages/Networks/NetworksPage"));
@@ -65,11 +66,21 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "profile/allActivity",
+        path: "profile/allActivity/:id",
         element: (
           <ProtectedRoute>
             <Suspense fallback={<h1>Loading...</h1>}>
               <AllActivitysPage />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "posts/:id",
+        element: (
+          <ProtectedRoute>
+            <Suspense fallback={<h1>Loading...</h1>}>
+              <PostDetails />
             </Suspense>
           </ProtectedRoute>
         ),

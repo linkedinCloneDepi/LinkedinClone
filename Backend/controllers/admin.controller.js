@@ -11,7 +11,7 @@ const search = async (req, res) => {
   const search = req.query.search || "";
   let data = [];
   if (module === "users") {
-    console.log(123);
+    
 
     const query = search
       ? {
@@ -75,7 +75,7 @@ const renderUsersView = async (req, res) => {
 
     // Respond with JSON if it's an AJAX request
     if (isAjaxRequest) {
-      console.log(123);
+      
 
       return res.status(200).json({
         users,
@@ -251,7 +251,7 @@ const renderCommentById = async (req, res) => {
       })
       .exec();
 
-    console.log(comment);
+    
 
     res.render("comments/commentDetails.pug", {
       comment,

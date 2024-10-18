@@ -27,7 +27,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   express.json({
-    limit: "50mb",
+    limit: "100mb",
   })
 );
 app.set("view engine", "pug");
@@ -48,7 +48,7 @@ app.use("/api/posts", postRoutes);
 
 app.use("/api/comments", commentRoutes);
 
-app.use("/api/notification", notificationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/connections", connectionRoutes);
 

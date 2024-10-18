@@ -20,5 +20,6 @@ router.post(
 );
 router.get("/:id", verifyTokenAndUserCheck, postController.getPostById);
 router.delete("/:id", verifyTokenAndUserCheck, postController.deletePost);
+router.delete("/share/:id", verifyTokenAndUserCheck, postController.deleteShare);
 
 module.exports = router;

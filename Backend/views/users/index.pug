@@ -65,7 +65,7 @@ block content
         const res = await fetch(`/api/admin/search/users?search=${encodeURIComponent(searchQuery)}`)
         const d = await res.json();
         const  data = d.data;
-        console.log(data);
+        
         if (data) {
           usersTable.innerHTML = `
             ${data.length > 0 ? `

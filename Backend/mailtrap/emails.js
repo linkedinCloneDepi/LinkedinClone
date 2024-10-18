@@ -15,7 +15,7 @@ module.exports.sendVerificationEmail = async (email, verificationToken) => {
 			category: "Email Verification",
 		});
 
-		console.log("Email sent successfully", response);
+		
 	} catch (error) {
 		console.error(`Error sending verification`, error);
 
@@ -35,7 +35,7 @@ module.exports.sendWelcomeEmail = async (email, username) => { //profileUrl
 			html: createWelcomeEmailTemplate(username),  //profileUrl
 			category: "Welcome Email",
 		});
-		console.log("Welcome email sent successfully", response);
+		
 	} catch (error) {
 		console.error(`Error sending welcome email`, error);
 		throw new Error(`Error sending welcome email: ${error}`);
@@ -69,7 +69,7 @@ module.exports.sendResetSuccessEmail = async(email)=>{
 			category: "Password Reset",
 		});
 
-		console.log("Password reset email sent successfully", response);
+		
 	} catch (error) {
 		console.error(`Error sending password reset success email`, error);
 

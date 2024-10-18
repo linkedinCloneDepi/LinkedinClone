@@ -6,7 +6,7 @@ const { User } = require("../models/user.model");
 const sendNotification = async (module) => {
   //   send notification to auther
   try {
-    // console.log(module);
+    // 
 
     const author = await User.findById(module.auther);
     if (!author) {
@@ -16,19 +16,19 @@ const sendNotification = async (module) => {
       author.notifications = [];
     }
     const notification = new Notification({
-      type: "like",
-      message: `${author.username} liked your {post}`,
+      type: "posts:likes",
+      message: `${author.username} liked your post`,
       relatedId: module._id,
       isRead: false,
     });
-    console.log("notification", notification);
+    
     const savedNotification = await notification.save();
 
     author.notifications.push(savedNotification._id);
     // Save the author's notifications
     await author.save();
   } catch (error) {
-    console.log(error);
+    
   }
 };
 
@@ -97,7 +97,7 @@ const addLike = async (req, res) => {
     //   relatedId: post._id,
     //   isRead: false,
     // });
-    // console.log(notification);
+    // 
     // const savedNotification = await notification.save();
     // const author = await User.findById(post.auther);
     // if (!author) {

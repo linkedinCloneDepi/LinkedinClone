@@ -21,7 +21,7 @@ export const useAuthStore = create((set) => ({
         password,
         username,
       });
-      console.log(response);
+      
       // localStorage.setItem()
       set({
         user: response.data.user,
@@ -33,7 +33,7 @@ export const useAuthStore = create((set) => ({
         error: error.response.data.message || "Error signing up",
         isLoading: false,
       });
-      console.log(error);
+      
       throw error;
     }
   },
@@ -137,7 +137,7 @@ export const useAuthStore = create((set) => ({
     }
   },
   updateProfile: async (updatedData) => {
-    console.log(updatedData);
+    
     
     set({ isLoading: true, error: null });
     try {
@@ -148,10 +148,10 @@ export const useAuthStore = create((set) => ({
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log("Profile Updated:", response.data);
+      
       set({ user: response.data.data, isLoading: false });
     } catch (error) {
-      console.log("Error updating profile:", error);
+      
       set({
         isLoading: false,
         error: error.response?.data?.message || "Error updating profile",

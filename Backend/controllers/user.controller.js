@@ -35,7 +35,6 @@ const getSuggstedConnections = async (req, res) => {
     })
       .populate({
         path: "connections", // Populating the connections field
-        select: "senderId receiverId status", // Selecting fields related to connections
       })
       .select("firstName lastName username profilePicture headline connections") // Fields to return from the user
       .skip(skip)
@@ -79,21 +78,21 @@ const getSuggstedConnections = async (req, res) => {
       totalSuggestedUsers,
     });
   } catch (error) {
-    console.log("error in getSuggstedConnections:", error);
+    
     res.status(500).json({ message: "server error" });
   }
 };
 
 const getPublicProfile = async (req, res) => {
   try {
-    console.log("Received request for id:", req.params.id);
+    
     // edit it because it was not working with findOne
     const user = await User.findById(req.params.id).select(
       "-password -notifications"
-    );
+    ).populate({path:"connections"});
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
-    } catch (error) {
+  } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ message: "Server error" });
   }
@@ -107,7 +106,7 @@ const deleteUser = async (req, res) => {
     }
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.log("Error in deleteUser:", error);
+    
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -117,22 +116,24 @@ const getAllUsers = async (req, res) => {
     // Get page and limit from query parameters, default to 1 and null if not provided
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit);
-    let connectionStatus = "";
     // Calculate the number of users to skip based on the current page
     const skip = limit ? (page - 1) * limit : 0;
     const search = req.query.search || "";
 
     // Construct search query with case-insensitive regex for name, username, etc.
-    const query = search
-      ? {
-          $or: [
-            { username: { $regex: search, $options: "i" } },
-            { firstName: { $regex: search, $options: "i" } },
-            { lastName: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-          ],
-        }
-      : {}; // If no search term, return all users
+    const query = {
+      ...(search
+        ? {
+            $or: [
+              { username: { $regex: search, $options: "i" } },
+              { firstName: { $regex: search, $options: "i" } },
+              { lastName: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {}),
+      _id: { $ne: req.user.id },
+    }; // If no search term, return all users
 
     var users = await User.find(query)
       .skip(skip)
@@ -142,8 +143,8 @@ const getAllUsers = async (req, res) => {
         path: "connections",
         select: "senderId receiverId status",
       });
+
     users = users.map((user) => {
-      // Check if the logged-in user is part of any connection (either sender or receiver)
       const userConnection = user.connections.find(
         (connection) =>
           connection.senderId.toString() === req.user.id ||
@@ -155,9 +156,6 @@ const getAllUsers = async (req, res) => {
       user.connectionStatus = userConnection
         ? userConnection.status
         : "connect";
-
-      // Remove connections field if it's not needed in the response
-      delete user.connections;
 
       return user;
     });
@@ -172,7 +170,7 @@ const getAllUsers = async (req, res) => {
       connectionstatus: "", //pending, accepted, notFriend,
     });
   } catch (error) {
-    console.log("error in Up getAllUsers:", error);
+    
     res.status(500).json({ message: error.message });
   }
 };
@@ -180,7 +178,7 @@ const getAllUsers = async (req, res) => {
 const getUserPosts = async (req, res) => {
   try {
     let user = req.user;
-    const userId = req.body.userId;
+    const userId = req.params.userId;
     if (userId && userId !== req.user._id) {
       user = await User.findById(userId);
     }
@@ -223,7 +221,7 @@ const getUserPosts = async (req, res) => {
 
     res.status(200).json(response);
   } catch (error) {
-    console.log("error in getUserPosts :", error);
+    
     res.status(500).json({ message: "server error" });
   }
 };
@@ -256,7 +254,7 @@ const getUserComments = async (req, res) => {
 
     res.status(200).json(response);
   } catch (error) {
-    console.log("error in getUserComments :", error);
+    
     res.status(500).json({ message: "server error" });
   }
 };
@@ -404,7 +402,7 @@ const getNotification = async (req, res) => {
 const addNotificationToUser = async (req, res) => {
   try {
     // Log the incoming request body
-    console.log(req.body);
+    
 
     // Validate if required fields are present
     if (!req.body.type || !req.body.message) {
@@ -419,7 +417,7 @@ const addNotificationToUser = async (req, res) => {
 
     // Save the notification
     const savedNotification = await notification.save();
-    console.log("Notification saved:", savedNotification);
+    
 
     // Find the user by ID from req.params
     const user = await User.findById(req.user._id);
@@ -432,7 +430,7 @@ const addNotificationToUser = async (req, res) => {
 
     // Save the updated user with new notifications
     await user.save();
-    console.log("User updated with notification:", user);
+    
 
     // Send the response with the updated user notifications
     res.status(200).json({ success: true, notifications: user.notifications });
@@ -480,7 +478,7 @@ const getUserConnections = async (req, res) => {
       ...response,
     });
   } catch (error) {
-    console.log("Error in getUserConnections", error);
+    
     return res
       .status(500)
       .json({ message: "Error in getting user connections" });

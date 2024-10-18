@@ -1,96 +1,63 @@
 import React, { useEffect, useRef, useState } from "react";
 import deleteIcon from "../../../assets/images/delete.svg";
-import ellipsisIcon from "../../../assets/images/ellipsis.svg";
+import { useNavigate } from "react-router-dom";
 import userIcon from "../../../assets/images/nav/user.svg";
 import Section from "../../../components/common/Section";
-const GenericNotification = ({ post, onDelete, action }) => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+const GenericNotification = ({ key, notification, onDelete }) => {
+  const navigate = useNavigate();
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
+  const openNotification = () => {
+    if (notification.type == "connectionRequest") {
+      navigate(`/networks`);
+    } else if (notification.type.includes("post")) {
+      navigate(`/posts/${notification.relatedId?notification.relatedId._id:""}`);
+    }
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
-
   return (
-    <div className="flex items-center hover:bg-linkedin-lighthover-gray w-full justify-between p-4 cursor-pointer border-b">
+    <div
+      className="flex items-center hover:bg-linkedin-lighthover-gray w-full justify-between p-4 cursor-pointer border-b"
+      onClick={openNotification}
+    >
       <div className="flex">
         <div className="mr-3">
-          <img
-            src="https://via.placeholder.com/40"
-            alt={`${post.creator}'s avatar`}
-            className="w-10 h-10 rounded-full"
-          />
+          {notification.relatedId && (
+            <img
+              src={
+                notification.relatedId.auther.profilePicture
+                  ? notification.relatedId.auther.profilePicture
+                  : userIcon
+              }
+              alt="avatar"
+              className="w-10 h-10 rounded-lg"
+              key={notification._id}
+            />
+          )}
         </div>
         <div>
           <div className="text-gray-800">
-            <span
-              className={`${
-                action === "loved your comment" ? "" : "font-semibold"
-              }`}
-            >
-              {post.creator}{" "}
-            </span>
-            <span
-              className={`${
-                action === "loved your comment" ? "font-semibold" : ""
-              }`}
-            >
-              {" "}
-              {action}{" "}
-            </span>
-
-            {action === "reacted to a post" ? (
-              <span className="line-clamp-3 max-w-xs">{post.content}</span>
-            ) : action === "commented" ? (
-              <span className="line-clamp-3">{post.comment}</span>
-            ) : action === "loved your comment" ? (
-              <div className="mx-auto w-[100%] cursor-default border-linkedin-darkhover-gray rounded-xl shadow-xs border-2 my-2 overflow-hidden">
-                <div className="border-b w-full p-2 bg-linkedinWhite">{post.comment} </div>
-                <div className="line-clamp-2 max-w-xs bg-linkedin-lighthover-blue p-1 text-linkedinGray">
-                  {post.content}
+            {notification.relatedId && (
+              <span className="font-semibold">
+                {`${notification.relatedId.auther.firstName} ${notification.relatedId.auther.lastName} `}
+              </span>
+            )}
+            <span>{notification.message} </span>
+            {notification.type.includes("post") && (
+              <div className="mx-auto w-[100%] cursor-default border-linkedin-darkhover-gray bg-linkedin-lighthover-blue rounded-xl shadow-xs border-2 my-2 overflow-hidden">
+                <div className="line-clamp-2 max-w-xs p-1 text-linkedinGray">
+                  {notification.relatedId?notification.relatedId.content:""}
                 </div>
               </div>
-            ) : (
-              " "
             )}
           </div>
-          <div className="text-gray-500 text-sm">{post.timestamp}</div>
+          <div className="text-gray-500 text-sm">{notification.date}</div>
         </div>
       </div>
 
       <div
         className="relative hover:bg-linkedin-darkhover-gray rounded-full p-4"
-        onClick={toggleDropdown}
-        ref={dropdownRef}
+        onClick={() => onDelete(notification._id)}
       >
-        <img src={ellipsisIcon} alt="ellipsis icon" className="h-5 w-5 icon" />
-        {/* Ellipsis Dropdown Menu */}
-        {isDropdownOpen && (
-          <div className="flex absolute right-0 bg-white shadow-lg rounded-md mt-8 z-50 ">
-            <div
-              className="flex justify-center items-center p-2 hover:bg-gray-200  bg-white shadow-lg rounded-md flex-shrink-0 gap-2"
-              onClick={onDelete}
-            >
-              <img src={deleteIcon} alt="delete icon" />
-              <span className="text-gray-500 font-semibold flex-shrink-0">
-                Delete notifications
-              </span>
-            </div>
-          </div>
-        )}
+        <img src={deleteIcon} alt="delete icon" className="h-5 w-5 icon" />
       </div>
     </div>
   );

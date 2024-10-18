@@ -59,12 +59,12 @@ const addComment = async (req, res) => {
     );
     //send notification to auther
     const notification = new Notification({
-      type: "comment",
+      type: "posts:comments",
       message: `${user.username} commented on your post`,
       relatedId: post._id,
       isRead: false,
     });
-    console.log(notification);
+    
     const savedNotification = await notification.save();
     const author = await User.findById(post.auther);
     if (!author) {
@@ -142,7 +142,7 @@ const editComment = async (req, res) => {
 const deleteComment = async (req, res) => {
   try {
     const commentId = req.params.id;
-    const comment = Comments.findById(commentId)
+    const userId = req.user._id
     // Find the comment to delete
     const commentToDelete = await Comments.findById(commentId).populate(
       "replies"
@@ -151,6 +151,7 @@ const deleteComment = async (req, res) => {
     if (!commentToDelete) {
       return res.status(404).json({ message: "Comment not found" });
     }
+    const postId = commentToDelete.postId;
 
     // Recursively delete all replies
     const repliesToDelete = commentToDelete.replies; // Get all replies to the comment
@@ -161,13 +162,15 @@ const deleteComment = async (req, res) => {
     }
 
     // Now delete the original comment
+    
+    
     await Posts.findByIdAndUpdate(
-      comment.postId,
-      { $pull: { comments: commentId } }, 
+      postId,
+      { $pull: { comments: commentId } },
       { new: true }
     );
-    await Users.findByIdAndUpdate(
-      comment.postId,
+    await User.findByIdAndUpdate(
+      userId,
       { $pull: { comments: commentId } }, 
       { new: true }
     );

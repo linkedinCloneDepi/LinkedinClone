@@ -1,12 +1,13 @@
 import React from "react";
 import { extractTime, extractTimeDuration } from "../../utils/extractTime";
 import { Link } from "react-router-dom";
+import userIcon from "../../assets/images/user.svg";
 
 function PostUserInfo({ post }) {
   return post ? (
     <div className="flex items-center gap-2">
       <img
-        src={post.auther.profilePicture}
+        src={post.auther.profilePicture ? post.auther.profilePicture : userIcon}
         alt=""
         className="w-[50px] h-[50px] rounded-full"
       />

@@ -1,5 +1,5 @@
 export function extractTime(dateString) {
-  console.log(dateString);
+  
   
 	const date = new Date(dateString);
 	const hours = padZero(date.getHours());

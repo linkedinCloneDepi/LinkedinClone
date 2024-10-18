@@ -8,7 +8,7 @@ const FilterOptions = ({ onFilterChange }) => {
 
   const filters = [
     { value: "all", label: "All" },
-    { value: "jobs", label: "Jobs" },
+    // { value: "jobs", label: "Jobs" },
     { value: "posts", label: "My posts" },
     { value: "mentions", label: "Mentions" },
   ];
@@ -16,7 +16,7 @@ const FilterOptions = ({ onFilterChange }) => {
   const postFilters = [
     { value: "all", label: "All" },
     { value: "comments", label: "Comments" },
-    { value: "reactions", label: "Reactions" },
+    { value: "likes", label: "Likes" },
     { value: "reposts", label: "Reposts" },
   ];
 

@@ -10,9 +10,9 @@ function Reacts({ post }) {
           <img
             src={likeIcon}
             alt=""
-            className="w-[17px] h-[17px] bg-linkedinBlue rounded-full p-[2px] border-[1px]"
+            className="w-[17px] h-[17px] bg-linkedinSecondBlue rounded-full p-[2px] border-[1px] mr-1"
           />
-          <img
+          {/* <img
             src={likeIcon}
             alt=""
             className="w-[17px] h-[17px] bg-red-500 rounded-full p-[2px] relative right-1 border-[1px]"
@@ -21,7 +21,7 @@ function Reacts({ post }) {
             src={likeIcon}
             alt=""
             className="w-[17px] h-[17px] bg-green-600 rounded-full p-[2px] relative right-2 border-[1px]"
-          />
+          /> */}
         </div>
         <p
           className="text-linkedinGray hover:text-linkedinBlue hover:underline cursor-pointer"

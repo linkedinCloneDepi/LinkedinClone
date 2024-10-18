@@ -19,7 +19,7 @@ function UserInfo() {
           <Button
             label={"Connect"}
             icon={<img src={addFriendIcon} />}
-            onClick={() => console.log("Post button clicked")}
+            onClick={() => {}}
             styleType="outline"
           />
         </div>

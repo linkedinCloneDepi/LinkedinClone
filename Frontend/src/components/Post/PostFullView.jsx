@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Section from "../common/section";
+import Section from "../common/Section";
 import Reacts from "./Reacts";
 import ReactsInteraction from "./ReactsInteraction";
 import AddComment from "./AddComment";
@@ -9,10 +9,11 @@ import LargeText from "../common/LargeText";
 import deleteIcon from "../../assets/images/delete.svg";
 
 import axios from "axios";
-import { deletePost, getPostComments } from "../../utils/postApi";
+import { deletePost, deleteShare, getPostComments } from "../../utils/postApi";
 import { useAuthStore } from "../../store/authStore";
 import Swal from "sweetalert2";
-function PostFullView({ post, setChange, setPosts }) {
+function PostFullView({ parentPost, setPosts }) {
+  const [post, setPost] = useState(parentPost);
   const description = post.content;
   const { user } = useAuthStore();
   const [isVisible, setIsVisible] = useState(false);
@@ -20,6 +21,7 @@ function PostFullView({ post, setChange, setPosts }) {
   const [commentAdded, setCommentAdded] = useState(0);
   const [page, setPage] = useState(1);
   const [hasMoreComments, setHasMoreComments] = useState(true);
+  const [loading, setLoading] = useState(false);
   const componentRef = useRef(null);
   const loaderRef = useRef(null);
   const limit = 3;
@@ -31,11 +33,10 @@ function PostFullView({ post, setChange, setPosts }) {
         newPage,
         limit,
         comments,
-        post._id
+        post._id,
+        setLoading
       );
       if (response.length === 0) {
-        console.log("no more comments");
-
         setHasMoreComments(false); // No more comments
       } else {
         setPage(newPage);
@@ -44,8 +45,8 @@ function PostFullView({ post, setChange, setPosts }) {
   };
 
   useEffect(() => {
-    getPostComments(setComments, 1, limit, comments, post._id);
-  }, [commentAdded]);
+    getPostComments(setComments, 1, limit, comments, post._id, setLoading);
+  }, [post]);
   // Function to open the PostFocus component when the image is clicked
   const handleImageClick = () => {
     setIsVisible(true);
@@ -71,7 +72,12 @@ function PostFullView({ post, setChange, setPosts }) {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        deletePost(post._id, setPosts)
+        if (checkIsShare()) {
+          deleteShare(post._id, setPosts);
+        } else {
+          deletePost(post._id, setPosts);
+        }
+        setPosts((prevPosts) => prevPosts.filter((p) => p._id !== post._id))
           .then(() => {
             // Update your state or handle UI changes after deletion
             setCommentAdded((prev) => prev - 1); // If you need to refresh comments
@@ -97,16 +103,22 @@ function PostFullView({ post, setChange, setPosts }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
+  const checkIsShare = () => {
+    return post.shares.includes(user._id);
+  };
   return (
-    <div className="bg-gray-100 p-3 rounded my-2 relative">
-      {user._id === post.auther._id?<button
-        className="absolute right-0 top-0 m-2 hover:bg-red-500 p-3 rounded-full duration-300"
-        onClick={handleDeletePost}
-      >
-        <img src={deleteIcon} alt="deleteIcon" />
-      </button>:<></>}
-      
+    <div className="bg-white p-3 rounded my-2 relative">
+      {user._id === post.auther._id || checkIsShare() ? (
+        <button
+          className="absolute right-0 top-0 m-2 hover:bg-red-500 p-3 rounded-full duration-300"
+          onClick={handleDeletePost}
+        >
+          <img src={deleteIcon} alt="deleteIcon" />
+        </button>
+      ) : (
+        <></>
+      )}
+
       {/* title with profile picture */}
       <div className="flex gap-2 justify-between items-start pb-3 ">
         <PostUserInfo post={post} />
@@ -127,10 +139,10 @@ function PostFullView({ post, setChange, setPosts }) {
             key={index}
             src={img}
             alt=""
-            className="w-[400px]  rounded-xl my-3 object-cover"
+            className="rounded-xl my-3 object-cover"
           />
         ))}
-        <div className="absolute bottom-5 right-5 bg-[rgba(255,255,255,0.6)] p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute bottom-5 right-5 bg-[rgba(255,255,255,0.6)] p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-black">
           {post.images.length}
         </div>
       </div>
@@ -138,14 +150,19 @@ function PostFullView({ post, setChange, setPosts }) {
       {/* Reacts */}
       <Reacts post={post} />
       <hr />
-      <ReactsInteraction post={post} setChange={setChange} />
+      <ReactsInteraction post={post} setPost={setPost} />
+      {loading && (
+        <div className="flex justify-center">
+          <span className="loading loading-spinner mx-auto text"></span>
+        </div>
+      )}
       {isVisible && (
         <div className="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-[500]">
           <PostFocus
             componentRef={componentRef}
             post={post}
+            setPost={setPost}
             comments={comments}
-            setChange={setChange}
             commentAdded={commentAdded}
             setCommentAdded={setCommentAdded}
             setComments={setComments}
@@ -162,8 +179,8 @@ function PostFullView({ post, setChange, setPosts }) {
 const PostFocus = ({
   componentRef,
   post,
+  setPost,
   comments,
-  setChange,
   commentAdded,
   setCommentAdded,
   setComments,
@@ -242,19 +259,16 @@ const PostFocus = ({
           <div className="mt-5">
             <Reacts post={post} />
           </div>
-          <ReactsInteraction post={post} setChange={setChange} />
+          <ReactsInteraction post={post} setPost={setPost} />
           <AddComment
             post={post}
+            setPost={setPost}
             setCommentAdded={setCommentAdded}
             commentAdded={commentAdded}
           />
           {comments ? (
             comments.map((comment, index) => (
-              <Comment
-                comment={comment}
-                commentAdded={commentAdded}
-                setCommentAdded={setCommentAdded}
-              />
+              <Comment comment={comment} setPost={setPost} />
             ))
           ) : (
             <>No Comments</>

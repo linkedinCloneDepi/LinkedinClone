@@ -15,7 +15,7 @@ const NotificationPage = () => {
     <div className=" min-h-screen py-3 mx-auto p-4 bg-linkedinLightGray mt-16 ">
       <main className="w-full max-w-2xl mx-auto">
         <FilterOptions onFilterChange={handleFilterChange} />
-        <NotificationList />
+        <NotificationList filter ={filter}/>
       </main>
     </div>
   );

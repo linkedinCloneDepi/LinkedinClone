@@ -8,9 +8,9 @@ const useGetMessages = () => {
   const { messages, setMessages, selectedConversation } = useConversation();
 
   useEffect(() => {
-    console.log("useEffect getMessages");
+    
     const getMessages = async () => {
-      console.log("getMessages");
+      
       setLoading(true);
       try {
         const res = await axios.get(
@@ -18,7 +18,7 @@ const useGetMessages = () => {
         );
         // const data = await res.json();
         // if (data.error) throw new Error(data.error);
-        console.log(res);
+        
         setMessages(res.data);
       } catch (error) {
         console.error("error in getMessages:", error);

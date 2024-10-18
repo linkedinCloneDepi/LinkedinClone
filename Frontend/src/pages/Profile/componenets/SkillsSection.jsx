@@ -32,7 +32,7 @@ const SkillsSection = ({isOwnProfile}) => {
           "http://localhost:5000/api/users/skill",
           { name: skillInput }
         );
-        console.log("Skill added successfully:", response.data.skills);
+        
         setSkills([
           ...skills,
           response.data.skills[response.data.skills.length - 1],

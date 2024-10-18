@@ -8,8 +8,7 @@ const Main = () => {
   const [showModal, setShowModal] = useState(false);
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [change, setchange] = useState("none");
-
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMoreComments, setHasMoreComments] = useState(true);
   const componentRef = useRef(null);
@@ -18,9 +17,15 @@ const Main = () => {
   const loadMoreComments = async () => {
     if (hasMoreComments) {
       const newPage = page + 1;
-      const response = await getFeedPosts(setPosts, newPage, limit, posts);
+      const response = await getFeedPosts(
+        setPosts,
+        newPage,
+        limit,
+        posts,
+        setLoading
+      );
       if (response.length === 0) {
-        console.log("no more comments");
+        
 
         setHasMoreComments(false); // No more comments
       } else {
@@ -45,10 +50,9 @@ const Main = () => {
     };
   }, [posts, hasMoreComments]);
   useEffect(() => {
-    const newPage = page + 1;
 
-    getFeedPosts(setPosts, newPage, limit, posts);
-  }, [change]);
+    getFeedPosts(setPosts, 1, limit, posts, setLoading);
+  }, []);
 
   const handleClick = () => setShowModal(!showModal);
 
@@ -96,9 +100,8 @@ const Main = () => {
           posts.length > 0 ? (
             posts.map((post) => (
               <PostFullView
-                post={post}
+                parentPost={post}
                 key={post._id}
-                setChange={setchange}
                 setPosts={setPosts}
               />
             ))
@@ -112,6 +115,11 @@ const Main = () => {
         )}
         <div ref={loaderRef} className="h-10"></div>
         {!hasMoreComments && <p>No more comments to load</p>}
+        {loading && (
+          <div className="flex justify-center">
+            <span className="loading loading-spinner mx-auto text"></span>
+          </div>
+        )}
       </div>
     </div>
   );

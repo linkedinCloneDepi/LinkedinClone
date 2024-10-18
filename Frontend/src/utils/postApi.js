@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const base_url = "http://localhost:5000/api";
+export const base_url = "http://localhost:5000/api";
 
 const pagination = async (data, newData, func) => {
   let updatedData = [];
@@ -8,9 +8,9 @@ const pagination = async (data, newData, func) => {
     const uniqueNewData = newData.filter(
       (newDataLoop) =>
         !data.some(
-          (existingComment) =>
-            existingComment._id === newDataLoop._id &&
-            existingComment.content === newDataLoop.content
+          (existingData) =>
+            existingData._id === newDataLoop._id &&
+            existingData.content === newDataLoop.content
         )
     );
     if (uniqueNewData.length !== 0) {
@@ -20,7 +20,6 @@ const pagination = async (data, newData, func) => {
   }
   return updatedData;
 };
-
 export const getPostById = async (id, func) => {
   try {
     const response = await axios.get(`${base_url}/posts/${id}`);
@@ -29,7 +28,6 @@ export const getPostById = async (id, func) => {
     console.error("Error fetching post:", error); // Handle errors if any
   }
 };
-
 export const addLike = async (id, type) => {
   try {
     const res = await axios.post(`${base_url}/likes`, {
@@ -52,25 +50,37 @@ export const deleteLike = async (id, type) => {
     console.error("Error fetching feed posts:", error); // Handle errors if any
   }
 };
-export const getFeedPosts = async (func, pageParam, limit = 10, posts = []) => {
+export const getFeedPosts = async (
+  func,
+  pageParam,
+  limit = 10,
+  posts = [],
+  setLoading
+) => {
   try {
+    setLoading(true);
     const res = await axios.get(
       `${base_url}/posts?page=${pageParam}&limit=${limit}`
     );
     // Ensure `posts` is an array and append new data to it
     const newPosts = res.data;
     const updatedPosts = pagination(posts, newPosts, func);
+    setLoading(false);
     return updatedPosts;
   } catch (error) {
     console.error("Error fetching feed posts:", error); // Handle errors if any
   }
 };
-
-export const getUserPosts = async (func, pageParam, limit = 10, posts = []) => {
+export const getUserPosts = async (func, pageParam, limit = 10, posts = [], userId = "",isLoading = ()=>{}) => {
   try {
+    
+    isLoading(true);
     const res = await axios.get(
-      `${base_url}/users/posts?page=${pageParam}&limit=${limit}`
+      `${base_url}/users/posts/${userId}?page=${pageParam}&limit=${limit}`
     );
+    
+    isLoading(false);
+    
 
     // Ensure `posts` is an array and append new data to it
     const updatedPosts = Array.isArray(posts)
@@ -81,13 +91,13 @@ export const getUserPosts = async (func, pageParam, limit = 10, posts = []) => {
     console.error("Error fetching feed posts:", error); // Handle errors if any
   }
 };
-
 export const getPostComments = async (
   func,
   pageParam = 1,
   limit = 10,
   comments = [],
-  postId
+  postId,
+  setLoading
 ) => {
   try {
     const res = await axios.get(
@@ -102,14 +112,13 @@ export const getPostComments = async (
     console.error("Error fetching feed comments:", error); // Handle errors if any
   }
 };
-
 export const sharePost = async (userId, postId) => {
   try {
     const res = await axios.patch(`${base_url}/posts/share`, {
       userId: userId,
       postId: postId,
     });
-    console.log(res);
+    
   } catch (error) {
     console.error("Error fetching feed posts:", error); // Handle errors if any
   }
@@ -120,7 +129,7 @@ export const addComment = async (postId, comment) => {
       postId: postId,
       comment: comment,
     });
-    console.log(res);
+    return res.data.comment
   } catch (error) {
     console.error("Error on Adding comment:", error); // Handle errors if any
   }
@@ -130,12 +139,11 @@ export const editComment = async (comment, commentID) => {
     const res = await axios.patch(`${base_url}/comments/${commentID}`, {
       comment: comment,
     });
-    console.log(res);
+    
   } catch (error) {
     console.error("Error on editing comment:", error); // Handle errors if any
   }
 };
-
 export const deleteComment = async (commentId) => {
   try {
     const res = await axios.delete(`${base_url}/comments/${commentId}`);
@@ -143,15 +151,35 @@ export const deleteComment = async (commentId) => {
     console.error("Error on Adding comment:", error); // Handle errors if any
   }
 };
-
 export const deletePost = async (postId, func) => {
   try {
-    
     const response = await axios.delete(`${base_url}/posts/${postId}`);
-    func(
-      (prevComments) => prevComments.filter((c) => c._id !== postId)
-    );
+    func((prevComments) => prevComments.filter((c) => c._id !== postId));
   } catch (error) {
     console.error("Error fetching post:", error); // Handle errors if any
+  }
+};
+
+export const deleteShare = async (postId, func) => {
+  try {
+    const response = await axios.delete(`${base_url}/posts/share/${postId}`);
+    func((prevComments) => prevComments.filter((c) => c._id !== postId));
+  } catch (error) {
+    console.error("Error fetching post:", error); // Handle errors if any
+  }
+};
+
+export const getPostByID = async (postId, func, setLoading) => {
+  try {
+    setLoading(true); 
+    const res = await axios.get(`${base_url}/posts/${postId}`);
+    
+    // Ensure `posts` is an array and append new data to it
+    const newPosts = res.data;
+    func(newPosts);
+    setLoading(false);
+    return newPosts;
+  } catch (error) {
+    console.error("Error fetching feed posts:", error); // Handle errors if any
   }
 };

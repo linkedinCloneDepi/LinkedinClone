@@ -7,6 +7,10 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    // sharedAuther: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    // },
     content: { type: String, required: true },
     images: [{ type: String }],
     videos: [{ type: String }],

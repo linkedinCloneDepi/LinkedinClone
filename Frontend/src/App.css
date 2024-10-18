@@ -8,5 +8,13 @@ input{
   background-color: #fff !important;
 }
 .custom-popup {
-  z-index: 5002 !important; /* Ensure it's above everything */
+  z-index: 5002 !important;
+}
+
+body,html{
+  background: #F4F2EE !important;
+}
+.bg-gray-100 {
+    --tw-bg-opacity: 1;
+    background-color: #fff;
 }

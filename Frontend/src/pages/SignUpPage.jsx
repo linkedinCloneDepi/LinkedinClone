@@ -22,7 +22,7 @@ function SignUpPage() {
 			navigate("/SignUpDetailsPage");
 			// navigate("/verify-email");
 		} catch (error) {
-			console.log(error);
+			
 		}
 	};
 

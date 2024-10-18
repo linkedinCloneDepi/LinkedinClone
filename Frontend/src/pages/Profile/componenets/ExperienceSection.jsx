@@ -87,10 +87,7 @@ const ExperienceSection = ({isOwnProfile}) => {
         "http://localhost:5000/api/users/experience",
         formData
       );
-      console.log(
-        "exp data",
-        response.data.experience[response.data.experience.length - 1]
-      );
+      
       setExperience([
         ...experience,
         response.data.experience[response.data.experience.length - 1],

@@ -16,7 +16,7 @@ const Messages = () => {
 		}, 100);
 	}, [messages]);
 
-  console.log(messages);
+  
   return (
     <div className="space-y-4">
       {!loading &&

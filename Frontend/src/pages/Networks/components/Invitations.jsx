@@ -8,7 +8,7 @@ const Invitations = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuthStore();
   const loggeduser = user;
-  console.log(loggeduser);
+  
 
   //Hooks
 
@@ -19,16 +19,17 @@ const Invitations = () => {
         setLoading(true);
         const response = await axios.get(`http://localhost:5000/api/users`);
         const { users } = response.data;
-
+        
         const filteredUsers = users.filter((user) => {
-            return user.connections.some(
+          
+          
+          return user.connections.some(
             (connection) =>
               connection.receiverId === loggeduser._id &&
               connection.status === "pending"
           );
         });
-        console.log(filteredUsers);
-
+        
         setInvitations(filteredUsers);
       } catch (error) {
         console.error("Error fetching search results", error);
@@ -53,7 +54,7 @@ const Invitations = () => {
 
       setInvitations(invitations.filter((invite) => invite._id !== id));
 
-      console.log("Connection accepted for user:", id);
+      
     } catch (error) {
       console.error("Error accepting connection:", error);
     }

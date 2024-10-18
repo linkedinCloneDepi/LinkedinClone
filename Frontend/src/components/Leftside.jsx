@@ -1,15 +1,37 @@
 import styled from "styled-components";
-
+import { useAuthStore } from "../store/authStore";
+import userIcon from "../assets/images/nav/user.svg";
+import defaultBG from "../assets/images/card-bg.svg";
+import { Link } from "react-router-dom";
 const Leftside = () => {
+  const { logout, user } = useAuthStore();
+
   return (
     <Container>
       <ArtCard>
         <UserInfo>
-          <CardBackground />
-          <a>
-            <Photo />
-            <Link >Welcome, there!</Link>
-          </a>
+          <CardBackground>
+            <img
+              src={user.bannerImg ? user.bannerImg : defaultBG}
+              alt=""
+              className="w-full object-cover"
+            />
+          </CardBackground>
+          <Link to={`/profile/${user._id}`}>
+            <div
+              className="w-16 h-16 rounded-full  text-center m-auto  "
+              style={{ marginTop: "-30px" }}
+            >
+              <img
+                src={user.profilePicture ? user.profilePicture : userIcon}
+                alt="image"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <h2 className="text-l font-bold">
+              {user.firstName} {user.lastName}
+            </h2>
+          </Link>
           <a>
             <AddPhotoText>Add a photo</AddPhotoText>
           </a>
@@ -53,7 +75,11 @@ const Leftside = () => {
 };
 
 const Container = styled.div`
-  grid-area: leftside;
+  width: 20%;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
 `;
 
 const ArtCard = styled.div`
@@ -76,34 +102,9 @@ const UserInfo = styled.div`
 `;
 
 const CardBackground = styled.div`
-  background: url("src/assets/images/card-bg.svg");
-  background-position: center;
-  background-size: 462px;
-  height: 54px;
+  height: 100px;
   margin: -12px -12px 0;
-`;
-
-const Photo = styled.div`
-  box-shadow: none;
-  background-image: url("src/assets/images/photo.svg");
-  width: 72px;
-  height: 72px;
-  box-sizing: border-box;
-  background-clip: content-box;
-  background-color: white;
-  background-position: center;
-  background-size: 60%;
-  background-repeat: no-repeat;
-  border: 2px solid white;
-  margin: -38px auto 12px;
-  border-radius: 50%;
-`;
-
-const Link = styled.div`
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.9);
-  font-weight: 600;
+  overflow-y: hidden;
 `;
 
 const AddPhotoText = styled.div`

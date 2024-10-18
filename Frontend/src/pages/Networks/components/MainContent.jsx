@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import ProfileCard from '../components/ProfileCard';
+import React, { useEffect, useState } from "react";
+import ProfileCard from "../components/ProfileCard";
 import axios from "axios";
 
 const MainContent = () => {
@@ -35,7 +35,7 @@ const MainContent = () => {
 
     fetchSuggestedUsers();
   }, []);
-  
+
   const handleIgnore = async (id) => {
     try {
       await axios.post("http://localhost:5000/api/connections/status", {
@@ -43,9 +43,7 @@ const MainContent = () => {
         status: "rejected",
       });
 
-    setProfiles(profiles.filter((profile) => profile.id !== id));
-
-      console.log("Connection accepted for user:", id);
+      setProfiles(profiles.filter((profile) => profile.id !== id));
     } catch (error) {
       console.error("Error accepting connection:", error);
     }

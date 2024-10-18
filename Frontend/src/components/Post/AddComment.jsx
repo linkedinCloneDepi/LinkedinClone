@@ -3,15 +3,18 @@ import { useAuthStore } from "../../store/authStore";
 import { addComment } from "../../utils/postApi";
 import sendIcon from "../../assets/images/send-icon.svg";
 
-function AddComment({ post, setCommentAdded, commentAdded }) {
-  
+function AddComment({ post, setPost, setCommentAdded, commentAdded }) {
   const { user } = useAuthStore();
   const [comment, setComment] = useState();
-  const handleCommentSubmit = async() => {
+  const handleCommentSubmit = async () => {
     if (comment.trim()) {
       const temp = commentAdded;
-      await addComment(post._id, comment);
-      setCommentAdded(temp+1);
+      const loadedComment = await addComment(post._id, comment);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: [...prevPost.comments, loadedComment._id], // add new comment
+      }));
+      setCommentAdded(temp + 1);
       setComment("");
     }
   };

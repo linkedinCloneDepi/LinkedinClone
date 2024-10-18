@@ -27,7 +27,7 @@ function AboutSection({ isOwnProfile }) {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      console.log("tempAbout", tempAbout);
+      
       await updateProfile({ about: tempAbout });
       setAbout(tempAbout); // Reflect changes locally
       setBtnClick(false); // Exit edit mode

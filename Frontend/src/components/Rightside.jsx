@@ -40,7 +40,7 @@ const Rightside = () => {
   const sendConnectionRequest = async (userId) => {
     try {
       const currentStatus = connectionStatus[userId];
-      console.log(currentStatus);
+      
 
       if (currentStatus === "connect") {
         // Send a connection request
@@ -50,8 +50,8 @@ const Rightside = () => {
             receiverId: userId,
           }
         );
-        console.log(" request :", response);
-        console.log("Connection request sent:", response.data);
+        
+        
         // Update the connection status to "pending"
         setConnectionStatus((prevStatus) => ({
           ...prevStatus,
@@ -66,7 +66,7 @@ const Rightside = () => {
           }
         );
 
-        console.log("Status changed back to Connect:", response.data);
+        
         setConnectionStatus((prevStatus) => ({
           ...prevStatus,
           [userId]: "connect",
@@ -147,8 +147,8 @@ const Rightside = () => {
 };
 
 const Container = styled.div`
-  grid-area: rightside;
-  @media (max-width: 1200px) {
+  width: 20%;
+  @media (max-width: 1300px) {
     display: none;
   }
 `;

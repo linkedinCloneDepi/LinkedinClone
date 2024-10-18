@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import styled from "styled-components";
 import "../Post/style.css";
+import { useAuthStore } from "../../store/authStore";
+import userIcon from "../../assets/images/nav/user.svg";
 import { getFeedPosts } from "../../utils/postApi";
 import axios from "axios";
 const base_url = "http://localhost:5000/api";
 
-const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
+const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile }) => {
   const [editorText, setEditorText] = useState("");
   const [assetArea, setAssetArea] = useState("");
   const [shareImage, setShareImage] = useState(null);
   const [videoLink, setVideoLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { logout, user } = useAuthStore();
 
   const handleChange = (e) => {
     const image = e.target.files[0];
@@ -31,8 +34,8 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
     e.preventDefault();
     setLoading(true);
     setError(""); // Clear previous error
-    console.log("shareImage", shareImage);
     
+
     const newPost = {
       imgs: shareImage ? [shareImage] : [], // Wrap single image in an array
       videos: videoLink,
@@ -48,9 +51,9 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
       if (videoLink) {
         formData.append("videos", videoLink);
       }
-      console.log("form data", formData);
-      console.log(newPost);
       
+      
+
       const response = await axios.post(
         `http://localhost:5000/api/posts`,
         newPost,
@@ -60,7 +63,7 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
           },
         }
       );
-      console.log(response);
+      
 
       if (!response.ok) {
         throw new Error("Failed to submit post");
@@ -71,7 +74,7 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
       reset(e);
     } catch (error) {
       console.error("Error while posting:", error);
-      setError("There was an error submitting your post.");
+      // setError("There was an error submitting your post.");
     } finally {
       setLoading(false);
     }
@@ -98,11 +101,15 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
         style={{ display: "flex", flexDirection: "column" }}
       >
         <div className="post-1">
-          <img
-            className="middle-pic"
-            src="src/assets/images/photo.svg"
-            alt="Profile"
-          />
+          <div className="mt-1">
+            <img
+              src={user.profilePicture ? user.profilePicture : userIcon}
+              alt="User"
+              width={48}
+              height={48}
+              className="rounded-full cursor-pointer mr-4"
+            />
+          </div>
           <input
             className="post"
             type="text"
@@ -155,8 +162,8 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <ShareContent>
               <UserInfo>
-                <img src="src/assets/images/photo.svg" alt="User" />
-                <span>Username</span>
+                <img src={user.profilePicture? user.profilePicture :{userIcon} } alt="User" />
+                <span>{`${user.firstName} ${user.lastName}`}</span>
               </UserInfo>
               <Editor>
                 <textarea
@@ -186,9 +193,7 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile}) => {
                         Select an image to share
                       </label>
                     </p>
-                    {shareImage && (
-                      <img src={shareImage} alt="img" />
-                    )}
+                    {shareImage && <img src={shareImage} alt="img" />}
                   </UploadImage>
                 ) : assetArea === "media" ? (
                   <>

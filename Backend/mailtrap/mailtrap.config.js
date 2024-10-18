@@ -45,6 +45,6 @@ module.exports.sender = {
 //       "company_info_country": "Test_Company_info_country"
 //     }
 //   })
-//   .then(console.log, console.error);
+//   .then(
 
 
