@@ -37,7 +37,7 @@ function AllActivitysPage() {
           <UserInfoCart user={realUser}></UserInfoCart>
         </aside>
         {/* Main Content Area */}
-        <main className="col-span-1 md:col-span-6 p-4">
+        <main className="col-span-1 md:col-span-6 p-4 w-full">
           <Section className="w-full">
             <div className="flex gap-2 justify-between py-3">
               <div>
@@ -70,7 +70,7 @@ function AllActivitysPage() {
           {/* Add more posts as needed */}
         </main>
         {/* Right Sidebar */}
-        <aside className="hidden lg:block lg:col-span-3 p-4">
+        <aside className="hidden lg:block lg:col-span-3 p-4 ">
           {/* <RecommendCard /> */}
           <Rightside />
         </aside>

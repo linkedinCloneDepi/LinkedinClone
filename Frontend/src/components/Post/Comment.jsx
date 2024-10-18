@@ -4,6 +4,8 @@ import sendIcon from "../../assets/images/send-icon.svg";
 import deleteIcon from "../../assets/images/delete.svg";
 import { deleteComment, editComment } from "../../utils/postApi";
 import { useAuthStore } from "../../store/authStore";
+import userIcon from "../../assets/images/user.svg";
+
 import Swal from "sweetalert2";
 function Comment({ comment, setPost }) {
   const { user } = useAuthStore();
@@ -62,7 +64,11 @@ function Comment({ comment, setPost }) {
   return (
     <div className="flex gap-2 py-4">
       <img
-        src={comment.userId.profilePicture}
+        src={
+          comment.userId.profilePicture
+            ? comment.userId.profilePicture
+            : userIcon
+        }
         alt=""
         className="w-[50px] h-[50px] rounded-full"
       />
@@ -70,7 +76,7 @@ function Comment({ comment, setPost }) {
         <div className="cursor-pointer pb-2">
           <div className="flex gap-2 ">
             <p className="text-bold text-black hover:text-linkedinBlue hover:underline">
-              {comment.userId.username}
+              {`${comment.userId.firstName} ${comment.userId.lastName}`}
             </p>
             <p className=" text-linkedinGray">&#x2022; 1st</p>
           </div>
@@ -89,18 +95,17 @@ function Comment({ comment, setPost }) {
             <p>{compComment}</p>
           )}
           {comment.userId._id === user._id ? (
-            <div className="flex gap-1">
+            <div className="flex gap-1 m-0">
               <img
                 src={!isEdit ? editIcon : sendIcon}
                 alt="emojiIcon"
-                className="w-[10] h-[10]"
+                className="max-w-[20px]"
                 onClick={() => handelEditComment()}
               />
-              |
               <img
                 src={deleteIcon}
                 alt="deleteIcon"
-                className="w-[10] h-[10]"
+                className="max-w-[20px]"
                 onClick={() => handelDeleteComment()}
               />
             </div>

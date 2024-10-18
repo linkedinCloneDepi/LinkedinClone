@@ -10,6 +10,8 @@ const FollowersPage = () => {
 
   useEffect(() => {
     if (user?.connectedUsers) {
+      console.log(user.connectedUsers);
+      
       setFollowers(user.connectedUsers);
     }
   }, [user]);

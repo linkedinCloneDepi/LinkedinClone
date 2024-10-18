@@ -87,9 +87,10 @@ const getPublicProfile = async (req, res) => {
   try {
     
     // edit it because it was not working with findOne
-    const user = await User.findById(req.params.id).select(
-      "-password -notifications"
-    ).populate({path:"connections"});
+    const user = await User.findById(req.params.id)
+      .select("-password -notifications")
+      .populate({ path: "connections" })
+      .populate({ path: "connectedUsers" });
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {

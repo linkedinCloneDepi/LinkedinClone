@@ -1,6 +1,7 @@
 import React from "react";
 import Reacts from "./Reacts";
 import { extractTimeDuration } from "../../utils/extractTime";
+import { Link } from "react-router-dom";
 
 
 function PostShortView({post}) {
@@ -30,7 +31,9 @@ function PostShortView({post}) {
                   <br />
                   <div className="flex justify-end">
                     <p>...</p>
+                    <Link to={`/posts/${post._id}`}>
                     <p className="hover:text-linkedinBlue">show more</p>
+                    </Link>
                   </div>
                 </>
               ) : (

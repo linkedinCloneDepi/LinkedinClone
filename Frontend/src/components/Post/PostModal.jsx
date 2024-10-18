@@ -162,7 +162,7 @@ const PostModal = ({ showModal, handleClick, handleAddPost, isOwnProfile }) => {
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <ShareContent>
               <UserInfo>
-                <img src={user.profilePicture? user.profilePicture :{userIcon} } alt="User" />
+                <img src={user.profilePicture? user.profilePicture :userIcon } alt="User" />
                 <span>{`${user.firstName} ${user.lastName}`}</span>
               </UserInfo>
               <Editor>

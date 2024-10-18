@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { addComment } from "../../utils/postApi";
 import sendIcon from "../../assets/images/send-icon.svg";
+import userIcon from "../../assets/images/user.svg";
 
 function AddComment({ post, setPost, setCommentAdded, commentAdded }) {
   const { user } = useAuthStore();
@@ -22,7 +23,7 @@ function AddComment({ post, setPost, setCommentAdded, commentAdded }) {
   return (
     <div className="flex gap-1 w-full">
       <img
-        src={user.profilePicture}
+        src={user.profilePicture ? user.profilePicture : userIcon}
         alt="userPhoto"
         className="w-[60px] h-[60px] rounded-full"
       />
