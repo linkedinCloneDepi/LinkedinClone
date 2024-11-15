@@ -256,3 +256,28 @@ module.exports.protectRoute = asyncHandler(async (req, res) => {
   }
   res.status(200).json({ success: true, user });
 });
+
+// module.exports.googleLogin = asyncHandler(async (req, res) => {
+//   const { email, username, googleId } = req.body;
+
+//   let user = await User.findOne({ email });
+
+//   if (!user) {
+//     user = new User({
+//       email,
+//       username,
+//       password: googleId, // Optional placeholder
+//       isVerified: true,  // Mark verified since it's from Google
+//     });
+//     await user.save();
+//   }
+
+//   // Generate token and set cookie
+//   generateTokenAndSetCookie(res, user._id, user.isAdmin);
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Google login successful",
+//     user: { ...user._doc, password: undefined },
+//   });
+// });

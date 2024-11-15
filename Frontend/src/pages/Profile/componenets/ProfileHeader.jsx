@@ -25,6 +25,8 @@ const ProfileHeader = ({ isOwnProfile }) => {
   const [newBackgroundImage, setNewBackgroundImage] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState();
+  const [firstExperience, setFirstExperience] = useState({});
+  const [firstEducation, setFirstEducation] = useState({});
 
   useEffect(() => {
     const data = isOwnProfile ? user : viewedUser;
@@ -50,11 +52,18 @@ const ProfileHeader = ({ isOwnProfile }) => {
       setHeadline(data.headline);
       setProfileImage(data.profilePicture || defaultImage);
       setBackgroundImage(data.bannerImg || defaultBG);
+      setFirstEducation(data.education?.slice(-1)[0] || {});
+      setFirstExperience(data.experience?.slice(-1)[0] || {});
     }
   }, [user, viewedUser, isOwnProfile]);
 
-  const firstEducation = profileData.education?.slice(-1)[0] || {};
-  const firstExperience = profileData.experience?.slice(-1)[0] || {};
+    useEffect(() => {
+      setFirstExperience(profileData.experience?.slice(-1)[0] || {});
+      setFirstEducation(profileData.education?.slice(-1)[0] || {});
+    }, [profileData.experience, profileData.education]);
+
+  // const firstEducation = profileData.education?.slice(-1)[0] || {};
+  // const firstExperience = profileData.experience?.slice(-1)[0] || {};
 
   const handleSave = async () => {
     setIsLoading(true);
