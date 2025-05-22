@@ -1,38 +1,26 @@
 {
-  "name": "linkedinclone",
+  "name": "linkedinclone-frontend",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "nodemon backend/app.js",
-    "start": "node backend/app.js",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cloudinary": "^2.5.0",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "express-async-handler": "^1.2.0",
-    "joi": "^17.13.3",
-    "joi-password-complexity": "^5.2.0",
-    "jsonwebtoken": "^9.0.2",
-    "mailtrap": "^3.4.0",
-    "mogoose": "^0.0.1-security",
-    "mongoose": "^8.7.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.15",
-    "pug": "^3.0.3",
-    "socket.io": "^4.8.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "daisyui": "^4.12.13",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
-    "nodemon": "^3.1.7",
-    "tailwindcss": "^3.4.13"
+    "tailwindcss": "^3.4.13",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.12"
   }
 }
